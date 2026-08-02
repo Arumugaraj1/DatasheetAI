@@ -1,23 +1,32 @@
 from sentence_transformers import SentenceTransformer
-from pathlib import Path
+import streamlit as st
 
-MODEL_PATH = Path(__file__).resolve().parent.parent / "models" / "all-MiniLM-L6-v2"
+# ------------------------------------------
+# Load embedding model only once
+# ------------------------------------------
+@st.cache_resource
+def load_model():
+    print("Loading embedding model...")
+    model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+    print("Embedding model loaded successfully.")
+    return model
 
-print(f"Loading embedding model from: {MODEL_PATH}")
+model = load_model()
 
-model = SentenceTransformer(
-    str(MODEL_PATH),
-    local_files_only=True
-)
-
-print("✅ Embedding model loaded successfully.")
-
-
+# ------------------------------------------
+# Create embeddings
+# ------------------------------------------
 def create_embeddings(texts):
-    return model.encode(
+    """
+    Generate normalized embeddings for a list of text strings.
+    """
+
+    embeddings = model.encode(
         texts,
         batch_size=16,
         show_progress_bar=False,
         convert_to_numpy=True,
         normalize_embeddings=True
     )
+
+    return embeddings
