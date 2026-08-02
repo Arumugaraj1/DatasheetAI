@@ -10,9 +10,7 @@ python-dotenv
 pypdf
 tiktoken
 openai
-##  .\.venv\Scripts\Activate
- #AIzaSyDn0ZZABM0C2NRkmKUIKt_iMeF_mUCcuEI
-=======
+
 streamlit
 langchain
 langchain-community
