@@ -1,16 +1,15 @@
 
 
 streamlit
-langchain
-langchain-community
-langchain-openai
-faiss-cpu
-pymupdf
-sentence-transformers
+google-generativeai
 python-dotenv
+sentence-transformers
+faiss-cpu
 pypdf
-tiktoken
-openai
+numpy
+torch
+transformers
+huggingface_hub
 
 
 
