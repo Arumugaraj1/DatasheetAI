@@ -1,14 +1,15 @@
-
-import streamlit as st
 import os
+import streamlit as st
 
 from src.ui.upload_ui import upload_page
+from src.retriever import retrieve
+from src.llm import ask_llm
 
 # -----------------------------
 # Page Config
 # -----------------------------
 st.set_page_config(
-    page_title="CTS Engineering AI Copilot",
+    page_title="CTS Engineering AI Assistant",
     page_icon="⚡",
     layout="wide"
 )
@@ -34,9 +35,7 @@ with st.sidebar:
     st.markdown("---")
 
     st.success("🟢 Gemini Connected")
-
     st.success("🟢 FAISS Ready")
-
     st.success("🟢 Embeddings Ready")
 
     st.markdown("---")
@@ -46,20 +45,16 @@ with st.sidebar:
     if os.path.exists("uploads"):
         files = os.listdir("uploads")
 
-        if len(files):
-
+        if files:
             for f in files:
                 st.write("📘", f)
-
         else:
-
             st.info("No datasheets uploaded")
 
 # -----------------------------
 # Header
 # -----------------------------
-st.markdown(
-    """
+st.markdown("""
 <div class="title">
 ⚡ CTS Engineering AI Copilot
 </div>
@@ -67,9 +62,7 @@ st.markdown(
 <div class="subtitle">
 Professional AI Assistant for Electronics Engineers
 </div>
-""",
-unsafe_allow_html=True
-)
+""", unsafe_allow_html=True)
 
 st.divider()
 
@@ -81,93 +74,72 @@ col1, col2, col3, col4 = st.columns(4)
 pdfs = len(os.listdir("uploads")) if os.path.exists("uploads") else 0
 
 with col1:
-
-    st.markdown(
-        f"""
+    st.markdown(f"""
 <div class="metric-card">
 <div class="metric-title">📂 Datasheets</div>
 <div class="metric-value">{pdfs}</div>
 </div>
-""",
-unsafe_allow_html=True
-    )
+""", unsafe_allow_html=True)
 
 with col2:
-
-    st.markdown(
-        """
+    st.markdown("""
 <div class="metric-card">
 <div class="metric-title">🤖 Gemini</div>
 <div class="status">ONLINE</div>
 </div>
-""",
-unsafe_allow_html=True
-    )
+""", unsafe_allow_html=True)
 
 with col3:
-
-    st.markdown(
-        """
+    st.markdown("""
 <div class="metric-card">
 <div class="metric-title">🧠 Embeddings</div>
 <div class="status">READY</div>
 </div>
-""",
-unsafe_allow_html=True
-    )
+""", unsafe_allow_html=True)
 
 with col4:
-
-    st.markdown(
-        """
+    st.markdown("""
 <div class="metric-card">
 <div class="metric-title">📦 Vector DB</div>
 <div class="status">ACTIVE</div>
 </div>
-""",
-unsafe_allow_html=True
-    )
+""", unsafe_allow_html=True)
 
 st.divider()
 
 # -----------------------------
-# Upload Section
+# Navigation
 # -----------------------------
-upload_page()
-=======
-import streamlit as st
-from src.ui.upload_ui import upload_page
-from src.retriever import retrieve
-from src.llm import ask_llm
-
-st.set_page_config(page_title="Datasheet AI", layout="wide")
-
-st.title("📘 Datasheet AI Assistant")
-
 menu = st.sidebar.radio(
-    "Menu",
-    ["Upload Datasheet", "Ask Questions"]
+    "Navigation",
+    ["📤 Upload Datasheet", "💬 Ask Questions"]
 )
 
-if menu == "Upload Datasheet":
+# -----------------------------
+# Upload Page
+# -----------------------------
+if menu == "📤 Upload Datasheet":
+
     upload_page()
 
+# -----------------------------
+# Ask AI
+# -----------------------------
 else:
 
     st.header("💬 Ask Questions")
 
     question = st.text_input(
-        "Enter your question"
+        "Ask anything about your uploaded datasheets"
     )
 
-    if st.button("Ask AI"):
+    if st.button("🚀 Ask AI"):
 
-        if question == "":
+        if question.strip() == "":
             st.warning("Please enter a question.")
             st.stop()
 
         with st.spinner("Searching Datasheet..."):
-
             chunks = retrieve(question)
 
         context = ""
@@ -177,20 +149,18 @@ else:
             context += chunk["text"]
 
         with st.spinner("Generating Answer..."):
-
             answer = ask_llm(question, context)
 
-        st.success("Answer")
+        st.success("AI Answer")
 
         st.write(answer)
 
         st.divider()
 
-        st.subheader("Source Chunks")
+        st.subheader("📄 Source Pages")
 
         for chunk in chunks:
 
             with st.expander(f"Page {chunk['page']}"):
 
                 st.write(chunk["text"])
-
