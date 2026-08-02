@@ -1,0 +1,13 @@
+streamlit
+langchain
+langchain-community
+langchain-openai
+faiss-cpu
+pymupdf
+sentence-transformers
+python-dotenv
+pypdf
+tiktoken
+openai
+##  .\.venv\Scripts\Activate
+ #AIzaSyDn0ZZABM0C2NRkmKUIKt_iMeF_mUCcuEI
