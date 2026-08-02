@@ -1,4 +1,5 @@
-<<<<<<< HEAD
+
+
 streamlit
 langchain
 langchain-community
@@ -10,4 +11,6 @@ python-dotenv
 pypdf
 tiktoken
 openai
+
+
 
