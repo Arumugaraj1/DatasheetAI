@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import streamlit as st
 import os
 
@@ -193,4 +193,4 @@ else:
             with st.expander(f"Page {chunk['page']}"):
 
                 st.write(chunk["text"])
->>>>>>> 1ea361a (Add files via upload)
+
