@@ -11,17 +11,3 @@ pypdf
 tiktoken
 openai
 
-streamlit
-langchain
-langchain-community
-langchain-openai
-faiss-cpu
-pymupdf
-sentence-transformers
-python-dotenv
-pypdf
-tiktoken
-openai
-##  .\.venv\Scripts\Activate
- #AIzaSyDn0ZZABM0C2NRkmKUIKt_iMeF_mUCcuEI
->>>>>>> a978eb5f68f29b5c72f8ca5b8096ec8a2f97787c
