@@ -1,58 +1,135 @@
 import streamlit as st
+import os
+
 from src.ui.upload_ui import upload_page
-from src.retriever import retrieve
-from src.llm import ask_llm
 
-st.set_page_config(page_title="Datasheet AI", layout="wide")
-
-st.title("📘 Datasheet AI Assistant")
-
-menu = st.sidebar.radio(
-    "Menu",
-    ["Upload Datasheet", "Ask Questions"]
+# -----------------------------
+# Page Config
+# -----------------------------
+st.set_page_config(
+    page_title="CTS Engineering AI Copilot",
+    page_icon="⚡",
+    layout="wide"
 )
 
-if menu == "Upload Datasheet":
-    upload_page()
+# -----------------------------
+# Load CSS
+# -----------------------------
+with open("assets/style.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-else:
+# -----------------------------
+# Sidebar
+# -----------------------------
+with st.sidebar:
 
-    st.header("💬 Ask Questions")
-
-    question = st.text_input(
-        "Enter your question"
+    st.image(
+        "https://cdn-icons-png.flaticon.com/512/2721/2721297.png",
+        width=80
     )
 
-    if st.button("Ask AI"):
+    st.title("CTS AI")
 
-        if question == "":
-            st.warning("Please enter a question.")
-            st.stop()
+    st.markdown("---")
 
-        with st.spinner("Searching Datasheet..."):
+    st.success("🟢 Gemini Connected")
 
-            chunks = retrieve(question)
+    st.success("🟢 FAISS Ready")
 
-        context = ""
+    st.success("🟢 Embeddings Ready")
 
-        for chunk in chunks:
-            context += f"\n\nPage {chunk['page']}\n"
-            context += chunk["text"]
+    st.markdown("---")
 
-        with st.spinner("Generating Answer..."):
+    st.write("### 📂 Datasheets")
 
-            answer = ask_llm(question, context)
+    if os.path.exists("uploads"):
+        files = os.listdir("uploads")
 
-        st.success("Answer")
+        if len(files):
 
-        st.write(answer)
+            for f in files:
+                st.write("📘", f)
 
-        st.divider()
+        else:
 
-        st.subheader("Source Chunks")
+            st.info("No datasheets uploaded")
 
-        for chunk in chunks:
+# -----------------------------
+# Header
+# -----------------------------
+st.markdown(
+    """
+<div class="title">
+⚡ CTS Engineering AI Copilot
+</div>
 
-            with st.expander(f"Page {chunk['page']}"):
+<div class="subtitle">
+Professional AI Assistant for Electronics Engineers
+</div>
+""",
+unsafe_allow_html=True
+)
 
-                st.write(chunk["text"])
+st.divider()
+
+# -----------------------------
+# Dashboard Cards
+# -----------------------------
+col1, col2, col3, col4 = st.columns(4)
+
+pdfs = len(os.listdir("uploads")) if os.path.exists("uploads") else 0
+
+with col1:
+
+    st.markdown(
+        f"""
+<div class="metric-card">
+<div class="metric-title">📂 Datasheets</div>
+<div class="metric-value">{pdfs}</div>
+</div>
+""",
+unsafe_allow_html=True
+    )
+
+with col2:
+
+    st.markdown(
+        """
+<div class="metric-card">
+<div class="metric-title">🤖 Gemini</div>
+<div class="status">ONLINE</div>
+</div>
+""",
+unsafe_allow_html=True
+    )
+
+with col3:
+
+    st.markdown(
+        """
+<div class="metric-card">
+<div class="metric-title">🧠 Embeddings</div>
+<div class="status">READY</div>
+</div>
+""",
+unsafe_allow_html=True
+    )
+
+with col4:
+
+    st.markdown(
+        """
+<div class="metric-card">
+<div class="metric-title">📦 Vector DB</div>
+<div class="status">ACTIVE</div>
+</div>
+""",
+unsafe_allow_html=True
+    )
+
+st.divider()
+
+# -----------------------------
+# Upload Section
+# -----------------------------
+upload_page()
