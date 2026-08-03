@@ -127,33 +127,74 @@ if menu == "📤 Upload Datasheet":
 # -----------------------------
 else:
 
-    st.header("💬 Ask Questions")
+    st.header("💬 Engineering AI Assistant")
 
-    question = st.text_input(
-        "Ask anything about your uploaded datasheets"
+    st.write(
+        "Ask any question about your uploaded electronics datasheets."
     )
 
-    if st.button("🚀 Ask AI"):
+    # Check Vector DB
+    if not os.path.exists("vector_db/datasheet.index"):
+
+        st.info("""
+### 📂 No Datasheet Indexed
+
+Upload one or more PDF datasheets first.
+
+After indexing, you can ask questions such as:
+
+• What is the operating voltage?
+
+• Explain the LED driver.
+
+• What is the register configuration?
+
+• What is the maximum current?
+
+• Explain the power supply section.
+
+• Give PCB design guidelines.
+""")
+
+    question = st.text_input(
+        "Ask your engineering question..."
+    )
+
+    ask = st.button(
+        "🚀 Ask AI",
+        use_container_width=True
+    )
+
+    if ask:
 
         if question.strip() == "":
             st.warning("Please enter a question.")
             st.stop()
 
-        with st.spinner("Searching Datasheet..."):
+        if not os.path.exists("vector_db/datasheet.index"):
+            st.error(
+                "No indexed datasheet found.\n\nPlease upload a PDF first."
+            )
+            st.stop()
+
+        with st.spinner("🔍 Searching Datasheets..."):
+
             chunks = retrieve(question)
 
         context = ""
 
         for chunk in chunks:
+
             context += f"\n\nPage {chunk['page']}\n"
             context += chunk["text"]
 
-        with st.spinner("Generating Answer..."):
+        with st.spinner("🤖 Gemini is generating the answer..."):
+
             answer = ask_llm(question, context)
 
-        st.success("AI Answer")
+        st.success("✅ AI Answer")
 
-        st.write(answer)
+        st.markdown(answer)
 
         st.divider()
 
@@ -161,6 +202,8 @@ else:
 
         for chunk in chunks:
 
-            with st.expander(f"Page {chunk['page']}"):
+            with st.expander(
+                f"📘 Page {chunk['page']}"
+            ):
 
                 st.write(chunk["text"])
