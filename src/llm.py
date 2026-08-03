@@ -5,17 +5,29 @@ import google.generativeai as genai
 
 load_dotenv()
 
-api_key = st.secrets.get("GOOGLE_API_KEY") or os.getenv("GOOGLE_API_KEY")
+api_key = os.getenv("GOOGLE_API_KEY")
 
 if not api_key:
-    raise ValueError("GOOGLE_API_KEY not found.")
+    try:
+        api_key = st.secrets.get("GOOGLE_API_KEY")
+    except Exception:
+        api_key = None
 
-genai.configure(api_key=api_key)
+model = None
 
-model = genai.GenerativeModel("gemini-2.5-flash")
+if api_key:
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel("gemini-2.5-flash")
 
 
 def ask_llm(question, context):
+    if model is None:
+        message = (
+            "Gemini API key is not configured. Add GOOGLE_API_KEY to your environment or Streamlit secrets."
+        )
+        st.error(message)
+        return message
+
     prompt = f"""
 You are a senior electronics engineer.
 
@@ -35,5 +47,13 @@ Provide:
 5. Design Recommendations
 """
 
-    response = model.generate_content(prompt)
-    return response.text
+    try:
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as exc:
+        message = (
+            f"Gemini request failed. Please replace the current API key with a valid one. "
+            f"Details: {exc}"
+        )
+        st.error(message)
+        return message
