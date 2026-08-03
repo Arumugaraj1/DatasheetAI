@@ -1,12 +1,12 @@
 streamlit
-google-generativeai
+groq
 python-dotenv
 sentence-transformers
 faiss-cpu
 pypdf
 PyMuPDF
+langchain-text-splitters
 numpy
 torch
 transformers
 huggingface_hub
-langchain-text-splitters
